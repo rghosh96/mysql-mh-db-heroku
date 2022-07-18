@@ -22,24 +22,26 @@ let metahumansDB = {};
 
 // return everything in this db
 metahumansDB.allConfigsForUser = (userID) => {
+    console.log("USER ID IN FUNC: ", userID)
     return new Promise((resolve, reject) => {
         conn.query('SELECT * FROM dfConfig WHERE userID = ?', userID, (err, results) => {
             if (err) {
                 return reject(err)
             }
-            return resolve(results[0])
+            return resolve(results)
         })
     })
 }
 
 metahumansDB.getOneConfig = (configID) => {
     return new Promise((resolve, reject) => {
+        console.log("IN GET ONE CONFIG FUNCTION")
         // question mark prevents sql injections!
         conn.query('SELECT * FROM dfConfig WHERE configID = ?', configID, (err, results) => {
             if (err) {
                 return reject(err)
             }
-            return resolve(results[0])
+            return resolve(results)
         })
     })
 }
@@ -48,7 +50,20 @@ metahumansDB.addConfig = (row) => {
     return new Promise((resolve, reject) => {
         console.log("about to add config!")
         // question mark prevents sql injections!
-        conn.query('INSERT INTO dfConfig (dfAgentID, userID, agentName) VALUES (?)', [row], (err, results) => {
+        conn.query('INSERT INTO dfConfig (dfAgentID, userID, agentName, expand, intent) VALUES (?)', [row], (err, results) => {
+            if (err) {
+                return reject(err)
+            }
+            return resolve(results)
+        })
+    })
+}
+
+metahumansDB.editConfig = (row) => {
+    return new Promise((resolve, reject) => {
+        console.log("about to add config!")
+        // question mark prevents sql injections!
+        conn.query('UPDATE dfConfig SET dfAgentID = ?, userID = ?, agentName= ?, expand= ?, intent= ? WHERE configID = ?', [row], (err, results) => {
             if (err) {
                 return reject(err)
             }
